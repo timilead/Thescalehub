@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Course — Coming Soon | TheScaleHub</title>
+  <meta name="description" content="Animated video lessons with professional voiceover. Coming soon from TheScaleHub.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1S6SFWM5XB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1S6SFWM5XB');
+</script>
+</head>
+<body>
+
+  <div id="navbar"></div>
+
+  <!-- ========== COMING SOON HERO ========== -->
+  <section class="coming-soon-hero">
+    <div class="hero-content" style="position:relative;z-index:1;">
+      <div class="cs-badge">🎬 COMING SOON</div>
+      <h1 style="color:white;font-size:2.75rem;margin-bottom:1rem;">Video Course Edition</h1>
+      <p style="color:rgba(255,255,255,0.85);font-size:1.15rem;max-width:600px;margin:0 auto 1.5rem;">
+        All 10 modules transformed into beautifully animated video lessons with professional voiceover narration. Learn by watching — anytime, anywhere.
+      </p>
+
+      <!-- Countdown placeholder -->
+      <div class="cs-countdown" id="countdown">
+        <div class="cs-count-item"><div class="cs-count-num" id="countDays">--</div><div class="cs-count-label">Days</div></div>
+        <div class="cs-count-item"><div class="cs-count-num" id="countHours">--</div><div class="cs-count-label">Hours</div></div>
+        <div class="cs-count-item"><div class="cs-count-num" id="countMins">--</div><div class="cs-count-label">Minutes</div></div>
+        <div class="cs-count-item"><div class="cs-count-num" id="countSecs">--</div><div class="cs-count-label">Seconds</div></div>
+      </div>
+
+      <p style="color:rgba(255,255,255,0.7);font-size:0.95rem;margin-bottom:1.25rem;">🔔 Get notified when we launch:</p>
+      <form class="cs-email-form" id="notifyForm" onsubmit="return handleNotifySignup(event)">
+        <input type="email" placeholder="your@email.com" required id="notifyEmail">
+        <button type="submit" class="btn btn-lg" style="background:linear-gradient(135deg,#f59e0b,#f97316);color:white;font-weight:700;white-space:nowrap;" id="notifyBtn">
+          Notify Me 🔔
+        </button>
+      </form>
+      <p id="notifySuccess" class="hidden" style="color:#22d3ee;font-weight:600;margin-top:1rem;">✅ You're on the list! We'll email you when we launch.</p>
+    </div>
+  </section>
+
+  <!-- ========== STATS ========== -->
+  <section class="section" style="padding:2.5rem 0;">
+    <div class="container">
+      <div class="stats-row">
+        <div class="stat-item"><div class="stat-number">10</div><div class="stat-label">Video Lessons</div></div>
+        <div class="stat-item"><div class="stat-number">3+ hrs</div><div class="stat-label">Total Runtime</div></div>
+        <div class="stat-item"><div class="stat-number">HD</div><div class="stat-label">Quality</div></div>
+        <div class="stat-item"><div class="stat-number">∞</div><div class="stat-label">Lifetime Access</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== WHAT'S INCLUDED ========== -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <h2>What's Coming</h2>
+        <p>Same powerful course content, but in a format that's easier to absorb and more engaging.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card"><div class="feature-icon">🎬</div><h3>Animated Visuals</h3><p>Complex concepts brought to life with engaging motion graphics and visual storytelling.</p></div>
+        <div class="feature-card"><div class="feature-icon">🎙️</div><h3>Professional Voiceover</h3><p>Clear, warm narration guides you through each lesson — like a personal tutor.</p></div>
+        <div class="feature-card"><div class="feature-icon">📱</div><h3>Watch Anywhere</h3><p>Stream on phone, tablet, or laptop. Learn during commutes, breaks, or downtime.</p></div>
+        <div class="feature-card"><div class="feature-icon">🧠</div><h3>Better Retention</h3><p>Video learners retain 95% of content vs. 10% from text alone.</p></div>
+        <div class="feature-card"><div class="feature-icon">🔄</div><h3>Rewatch Anytime</h3><p>Lifetime access means you can revisit any lesson whenever you need a refresher.</p></div>
+        <div class="feature-card"><div class="feature-icon">📋</div><h3>Includes Text Course</h3><p>Full access to the text course + quizzes + certificate alongside the videos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MODULE PREVIEW LIST ========== -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>All 10 Video Modules</h2>
+        <p>Every module from the text course, reimagined as animated video.</p>
+      </div>
+      <div id="videoModulesList" class="curriculum-list"></div>
+    </div>
+  </section>
+
+  <!-- ========== CAN'T WAIT CTA ========== -->
+  <section class="section section-alt">
+    <div class="container" style="max-width:700px;text-align:center;">
+      <h2>Can't Wait? Start the Free Text Course Now</h2>
+      <p style="color:var(--gray-500);margin-bottom:2rem;">Get started immediately with our comprehensive text-based course. When the video course launches, you'll be ahead of the game!</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="dashboard.html" class="btn btn-primary btn-lg">🚀 Start Free Course</a>
+        <a href="index.html" class="btn btn-secondary btn-lg">← Back Home</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FINAL CTA ========== -->
+  <section class="section" style="background:linear-gradient(135deg,var(--primary),var(--accent));text-align:center;color:white;padding:4rem 1.5rem;">
+    <div class="container">
+      <h2 style="color:white;margin-bottom:1rem;">Be the First to Know</h2>
+      <p style="color:rgba(255,255,255,0.9);max-width:500px;margin:0 auto 1rem;">Sign up for early access and exclusive launch pricing.</p>
+      <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin-bottom:2rem;">🔒 No spam · Unsubscribe anytime</p>
+      <form class="cs-email-form" onsubmit="return handleNotifySignup(event)" style="max-width:440px;margin:0 auto;">
+        <input type="email" placeholder="your@email.com" required>
+        <button type="submit" class="btn btn-lg" style="background:white;color:var(--primary);font-weight:700;white-space:nowrap;">Notify Me</button>
+      </form>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="modules-data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    renderNavbar('video');
+    renderFooter();
+
+    // Render module preview list
+    const list = document.getElementById('videoModulesList');
+    if (list) {
+      const icons = ['🔍','🎯','💬','📢','🔄','🤝','⭐','💰','📧','💡'];
+      list.innerHTML = MODULES.map((m, i) => `
+        <div class="curriculum-item" style="opacity:0.85;">
+          <div class="curriculum-num" style="background:linear-gradient(135deg,#f59e0b,#f97316);">${m.id}</div>
+          <span>${icons[i]} ${m.title}</span>
+          <span style="margin-left:auto;font-size:0.75rem;color:var(--gray-400);font-weight:600;">COMING SOON</span>
+        </div>
+      `).join('');
+    }
+
+    // Countdown timer (set your launch date here)
+    const LAUNCH_DATE = new Date();
+    LAUNCH_DATE.setDate(LAUNCH_DATE.getDate() + 45); // 45 days from now
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = LAUNCH_DATE - now;
+      if (diff <= 0) {
+        document.getElementById('countDays').textContent = '0';
+        document.getElementById('countHours').textContent = '0';
+        document.getElementById('countMins').textContent = '0';
+        document.getElementById('countSecs').textContent = '0';
+        return;
+      }
+      document.getElementById('countDays').textContent = Math.floor(diff / 86400000);
+      document.getElementById('countHours').textContent = Math.floor((diff % 86400000) / 3600000);
+      document.getElementById('countMins').textContent = Math.floor((diff % 3600000) / 60000);
+      document.getElementById('countSecs').textContent = Math.floor((diff % 60000) / 1000);
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // Notification signup
+    function handleNotifySignup(e) {
+      e.preventDefault();
+      const email = e.target.querySelector('input[type="email"]').value;
+
+      // If Firebase is ready, store in Firestore
+      if (firebaseReady && db) {
+        db.collection('video_waitlist').add({
+          email: email,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(err => console.error(err));
+      }
+
+      // Show success
+      e.target.classList.add('hidden');
+      const suc = document.getElementById('notifySuccess');
+      if (suc) suc.classList.remove('hidden');
+      else {
+        const p = document.createElement('p');
+        p.style.cssText = 'color:#22d3ee;font-weight:600;margin-top:1rem;';
+        p.textContent = '✅ You\'re on the list!';
+        e.target.parentNode.appendChild(p);
+      }
+      return false;
+    }
+  </script>
+</body>
+</html>

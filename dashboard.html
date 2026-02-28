@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | TheScaleHub</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1S6SFWM5XB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1S6SFWM5XB');
+</script>
+</head>
+<body>
+
+  <div id="navbar"></div>
+
+  <!-- ========== DASHBOARD HEADER ========== -->
+  <section class="dashboard-header">
+    <div class="container">
+      <h1>Your Learning Dashboard</h1>
+      <p>Track your progress through all 10 modules of the course.</p>
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar" style="width:0%;"></div>
+      </div>
+      <div class="progress-text" id="progressText">0 of 10 modules completed (0%)</div>
+    </div>
+  </section>
+
+  <!-- ========== REFERRAL SECTION ========== -->
+  <section class="container" style="padding-top:2rem;">
+    <div id="referralSection"></div>
+  </section>
+
+  <!-- ========== MODULE CARDS ========== -->
+  <section class="container">
+    <div class="modules-grid" id="modulesGrid"></div>
+    <div class="text-center" style="padding-bottom:3rem;">
+      <button onclick="if(confirm('Reset all progress? This cannot be undone.')){resetProgress();location.reload();}" class="btn btn-sm" style="background:var(--gray-100);color:var(--gray-500);border:1px solid var(--gray-200);">
+        🔄 Reset Progress
+      </button>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="modules-data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    renderNavbar('dashboard');
+    renderDashboard();
+    renderFooter();
+  </script>
+</body>
+</html>

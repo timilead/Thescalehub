@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy | TheScaleHub</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1S6SFWM5XB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1S6SFWM5XB');
+</script>
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <section class="hero" style="padding:4rem 1.5rem;">
+    <div class="hero-content">
+      <p style="font-size:0.95rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1rem;opacity:0.85;">Legal</p>
+      <h1>Privacy Policy</h1>
+      <p>Your privacy is important to us. This policy explains what data we collect and your rights.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-narrow">
+      <div class="lesson-content">
+        <p style="color:var(--gray-500);"><strong>Last Updated:</strong> <span id="policyDate"></span></p>
+
+        <h2>1. Introduction</h2>
+        <p>Welcome to TheScaleHub ("we," "our," or "us"). We are committed to protecting your personal information and your right to privacy. This policy explains how we collect, use, and safeguard your information when you use our website and course platform.</p>
+
+        <h2>2. Information We Collect</h2>
+        <h3>2.1 Account Information</h3>
+        <p>When you register for an account, we collect:</p>
+        <ul>
+          <li>Full name</li>
+          <li>Email address</li>
+          <li>Password (encrypted, stored by Firebase Authentication)</li>
+          <li>Referral code (if provided)</li>
+        </ul>
+
+        <h3>2.2 Learning Progress</h3>
+        <p>We store your course progress using your browser's LocalStorage:</p>
+        <ul>
+          <li>Completed module IDs</li>
+          <li>Quiz scores</li>
+          <li>Course completion status</li>
+        </ul>
+
+        <div class="tip-box">
+          <div class="tip-box-title">💡 Important</div>
+          <p>Progress data stored in LocalStorage remains <strong>on your device only</strong>. You can clear it anytime using "Reset Progress" on the dashboard.</p>
+        </div>
+
+        <h3>2.3 Contact Information</h3>
+        <p>If you contact us through our form, we collect your name, email, and message content.</p>
+
+        <h3>2.4 Automatically Collected Data</h3>
+        <ul>
+          <li>Browser type and version</li>
+          <li>Pages viewed and time spent</li>
+          <li>IP address (anonymized where possible)</li>
+          <li>Referring website</li>
+        </ul>
+
+        <h2>3. How We Use Your Information</h2>
+        <ul>
+          <li><strong>Authentication:</strong> Managing your account and login</li>
+          <li><strong>Course delivery:</strong> Tracking progress and quiz scores</li>
+          <li><strong>Referral program:</strong> Tracking referrals and rewarding users</li>
+          <li><strong>Communication:</strong> Responding to inquiries and sending updates</li>
+          <li><strong>Improvement:</strong> Understanding usage patterns to improve the platform</li>
+        </ul>
+
+        <h2>4. Firebase & Data Processing</h2>
+        <p>We use Google Firebase for authentication and data storage. Firebase processes data according to <a href="https://firebase.google.com/support/privacy" target="_blank" style="color:var(--accent);">Google's Privacy Policy</a>. Data is stored securely in Firebase's cloud infrastructure.</p>
+
+        <h2>5. Data Sharing</h2>
+        <p>We do <strong>not</strong> sell, trade, or rent your personal information. We share data only:</p>
+        <ul>
+          <li>With your consent</li>
+          <li>When required by law</li>
+          <li>With trusted service providers (Firebase, analytics) bound by confidentiality</li>
+        </ul>
+
+        <h2>6. Cookies</h2>
+        <p>We may use cookies for analytics and essential functionality. You can control cookies through your browser settings.</p>
+
+        <h2>7. Your Rights</h2>
+        <ul>
+          <li><strong>Access:</strong> Request a copy of your data</li>
+          <li><strong>Rectification:</strong> Request correction of inaccurate data</li>
+          <li><strong>Erasure:</strong> Request deletion of your account and data</li>
+          <li><strong>Portability:</strong> Request your data in a structured format</li>
+        </ul>
+
+        <h2>8. Nigeria Data Protection (NDPR)</h2>
+        <p>For Nigerian users, we comply with the Nigeria Data Protection Regulation (NDPR) by NITDA, including lawful processing, data minimization, accuracy, and appropriate security measures.</p>
+
+        <h2>9. Children's Privacy</h2>
+        <p>Our platform is not intended for children under 13. We do not knowingly collect data from children.</p>
+
+        <h2>10. Changes to This Policy</h2>
+        <p>We may update this policy periodically. Changes will be posted here with an updated date.</p>
+
+        <h2>11. Contact Us</h2>
+        <div class="example-box">
+          <p><strong>TheScaleHub</strong></p>
+          <p>📧 Email: <a href="mailto:hello@thescalehub.com" style="color:var(--accent);">hello@thescalehub.com</a></p>
+          <p style="margin-bottom:0;">📬 Contact Form: <a href="contact.html" style="color:var(--accent);">Contact Us Page</a></p>
+        </div>
+
+        <div style="margin-top:2.5rem;text-align:center;">
+          <a href="index.html" class="btn btn-primary">← Back to Home</a>
+          <a href="contact.html" class="btn btn-secondary" style="margin-left:0.75rem;">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="modules-data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    renderNavbar('privacy');
+    renderFooter();
+    document.getElementById('policyDate').textContent = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  </script>
+</body>
+</html>

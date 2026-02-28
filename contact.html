@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | TheScaleHub</title>
+  <meta name="description" content="Get in touch with TheScaleHub. Questions, feedback, or partnership inquiries welcome.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1S6SFWM5XB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1S6SFWM5XB');
+</script>
+</head>
+<body>
+
+  <div id="navbar"></div>
+
+  <section class="hero" style="padding:4rem 1.5rem;">
+    <div class="hero-content">
+      <p style="font-size:0.95rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1rem;opacity:0.85;">Contact Us</p>
+      <h1>We'd Love to Hear From You</h1>
+      <p>Have a question, feedback, or partnership inquiry? Send us a message.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" style="max-width:1000px;">
+      <div class="contact-grid">
+        <!-- Contact Form -->
+        <div class="contact-form-card">
+          <h2 style="margin-bottom:0.5rem;">Send a Message</h2>
+          <p style="color:var(--gray-500);margin-bottom:2rem;">We'll respond within 24–48 hours.</p>
+
+          <form id="contactForm" onsubmit="return handleContactSubmit(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">First Name <span style="color:var(--danger);">*</span></label>
+                <input type="text" id="firstName" required placeholder="Your first name">
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name <span style="color:var(--danger);">*</span></label>
+                <input type="text" id="lastName" required placeholder="Your last name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email">Email <span style="color:var(--danger);">*</span></label>
+              <input type="email" id="email" required placeholder="you@example.com">
+            </div>
+            <div class="form-group">
+              <label for="subject">Subject <span style="color:var(--danger);">*</span></label>
+              <select id="subject" required>
+                <option value="" disabled selected>Select a topic</option>
+                <option value="general">General Question</option>
+                <option value="feedback">Course Feedback</option>
+                <option value="bug">Report a Problem</option>
+                <option value="partnership">Partnership Inquiry</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message">Message <span style="color:var(--danger);">*</span></label>
+              <textarea id="message" rows="6" required placeholder="Tell us how we can help..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" style="width:100%;">📩 Send Message</button>
+          </form>
+
+          <div id="contactSuccess" class="contact-success hidden">
+            <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
+            <h3>Message Sent!</h3>
+            <p>Thank you for reaching out. We'll get back to you within 24–48 hours.</p>
+            <button onclick="resetContactForm()" class="btn btn-secondary mt-3">Send Another Message</button>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="contact-info-sidebar">
+          <div class="contact-info-card">
+            <div class="contact-info-icon">📧</div>
+            <h4>Email Us</h4>
+            <p>hello@thescalehub.com</p>
+          </div>
+          <div class="contact-info-card">
+            <div class="contact-info-icon">💬</div>
+            <h4>Social Media</h4>
+            <p>Follow TheScaleHub on Twitter, Instagram, and LinkedIn.</p>
+          </div>
+          <div class="contact-info-card">
+            <div class="contact-info-icon">⏰</div>
+            <h4>Response Time</h4>
+            <p>We typically respond within 24–48 hours on business days.</p>
+          </div>
+          <div class="contact-info-card">
+            <div class="contact-info-icon">❓</div>
+            <h4>FAQs</h4>
+            <div class="faq-list">
+              <details class="faq-item"><summary>Is the course really free?</summary><p>Yes! All 10 modules, quizzes, and certificate are 100% free.</p></details>
+              <details class="faq-item"><summary>Do I need to create an account?</summary><p>Module 1 is open to all. After that, you'll need a free account to track progress and unlock modules.</p></details>
+              <details class="faq-item"><summary>Can I retake a quiz?</summary><p>Yes! Review the material and retry as many times as needed.</p></details>
+              <details class="faq-item"><summary>How does the referral program work?</summary><p>After registering, you'll get a unique referral link. Share it with friends — when they sign up, you earn rewards!</p></details>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="modules-data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    renderNavbar('contact');
+    renderFooter();
+
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true; btn.textContent = 'Sending...';
+
+      // Store in Firestore if available
+      if (firebaseReady && db) {
+        db.collection('contact_messages').add({
+          firstName: document.getElementById('firstName').value,
+          lastName: document.getElementById('lastName').value,
+          email: document.getElementById('email').value,
+          subject: document.getElementById('subject').value,
+          message: document.getElementById('message').value,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(err => console.error(err));
+      }
+
+      setTimeout(() => {
+        document.getElementById('contactForm').classList.add('hidden');
+        document.getElementById('contactSuccess').classList.remove('hidden');
+        btn.disabled = false; btn.textContent = '📩 Send Message';
+      }, 1500);
+      return false;
+    }
+
+    function resetContactForm() {
+      document.getElementById('contactForm').reset();
+      document.getElementById('contactForm').classList.remove('hidden');
+      document.getElementById('contactSuccess').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
