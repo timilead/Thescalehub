@@ -646,8 +646,7 @@ async function renderBlogPosts(containerId, limit) {
   limit = limit || 50;
   const c = document.getElementById(containerId);
   if (!c) return;
-
-  if (!firebaseReady) {
+  if (!firebaseReady || !db) {
     c.innerHTML = `
       <div class="blog-empty">
         <div style="font-size:3rem;margin-bottom:1rem;">📝</div>
@@ -657,31 +656,64 @@ async function renderBlogPosts(containerId, limit) {
     return;
   }
   c.innerHTML = '<div class="blog-loading"><div class="spinner-sm"></div><p>Loading posts...</p></div>';
-
   try {
-    const snap = await db.collection('posts').where('published', '==', true).orderBy('createdAt', 'desc').limit(limit).get();
+    let snap;
+    // TRY 1: Compound query (needs Firestore composite index)
+    try {
+      snap = await db.collection('posts')
+        .where('published', '==', true)
+        .orderBy('createdAt', 'desc')
+        .limit(limit)
+        .get();
+    } catch (indexErr) {
+      // The compound query failed — likely missing composite index.
+      // Log the error — Firestore gives a direct link to create the index.
+      console.warn('Blog: Compound query failed (index needed). Falling back to simple query.');
+      console.warn('Click this link in the error below to create the index automatically:');
+      console.error(indexErr);
+      // TRY 2: Fallback — get ALL posts, filter in JS
+      const allSnap = await db.collection('posts').get();
+      const publishedDocs = allSnap.docs
+        .filter(doc => doc.data().published === true)
+        .sort((a, b) => {
+          const aTime = a.data().createdAt ? a.data().createdAt.toMillis() : 0;
+          const bTime = b.data().createdAt ? b.data().createdAt.toMillis() : 0;
+          return bTime - aTime;
+        })
+        .slice(0, limit);
+      // Create a fake snapshot-like object
+      snap = { empty: publishedDocs.length === 0, docs: publishedDocs };
+    }
     if (snap.empty) {
       c.innerHTML = `<div class="blog-empty"><div style="font-size:3rem;margin-bottom:1rem;">📝</div><h3>No Posts Yet</h3><p>Stay tuned for business growth tips!</p></div>`;
       return;
     }
     c.innerHTML = snap.docs.map(doc => {
       const p = doc.data();
-      const date = p.createdAt ? p.createdAt.toDate().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
-      const excerpt = p.excerpt || p.content.substring(0, 150) + '...';
+      let dateStr = '';
+      try {
+        if (p.createdAt && p.createdAt.toDate) {
+          dateStr = p.createdAt.toDate().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        } else if (p.updatedAt && p.updatedAt.toDate) {
+          dateStr = p.updatedAt.toDate().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+      } catch (e) { dateStr = 'Recent'; }
+      const excerpt = p.excerpt || (p.content ? p.content.substring(0, 150) + '...' : '');
       return `
         <div class="blog-card">
           ${p.imageUrl ? `<div class="blog-card-img" style="background-image:url('${p.imageUrl}')"></div>` : `<div class="blog-card-img blog-card-img-placeholder"><span>📝</span></div>`}
           <div class="blog-card-body">
-            <div class="blog-card-date">${date}</div>
-            <h3>${p.title}</h3>
+            <div class="blog-card-date">${dateStr}</div>
+            <h3>${p.title || 'Untitled Post'}</h3>
             <p>${excerpt}</p>
             ${p.link ? `<a href="${p.link}" target="_blank" rel="noopener" class="blog-read-more">Read More →</a>` : ''}
           </div>
         </div>`;
     }).join('');
+    console.log('Blog: Loaded ' + snap.docs.length + ' posts successfully.');
   } catch (err) {
     console.error('Blog load error:', err);
-    c.innerHTML = `<div class="blog-empty"><h3>⚠️ Unable to Load</h3><p>Check connection and try again.</p></div>`;
+    c.innerHTML = `<div class="blog-empty"><h3>⚠️ Unable to Load Posts</h3><p>Error: ${err.message || 'Unknown error'}. Check browser console for details.</p></div>`;
   }
 }
 
@@ -708,23 +740,39 @@ async function renderAdminPanel() {
 
 async function loadAdminPosts() {
   const c = document.getElementById('adminPostsList');
-  if (!c || !firebaseReady) return;
+  if (!c || !firebaseReady || !db) return;
   try {
-    const snap = await db.collection('posts').orderBy('createdAt', 'desc').get();
-    if (snap.empty) { c.innerHTML = '<p style="text-align:center;color:var(--gray-500);padding:2rem;">No posts yet.</p>'; return; }
+    let snap;
+    // Try ordered query first, fallback to unordered if index missing
+    try {
+      snap = await db.collection('posts').orderBy('createdAt', 'desc').get();
+    } catch (indexErr) {
+      console.warn('Admin: orderBy query failed, falling back to unordered fetch.');
+      console.error(indexErr);
+      snap = await db.collection('posts').get();
+    }
+    if (snap.empty) { c.innerHTML = '<p style="text-align:center;color:var(--gray-500);padding:2rem;">No posts yet. Create your first post above!</p>'; return; }
     c.innerHTML = snap.docs.map(doc => {
       const p = doc.data();
-      const date = p.createdAt ? p.createdAt.toDate().toLocaleDateString() : 'Draft';
+      let date = 'Draft';
+      try {
+        if (p.createdAt && p.createdAt.toDate) date = p.createdAt.toDate().toLocaleDateString();
+        else if (p.updatedAt && p.updatedAt.toDate) date = p.updatedAt.toDate().toLocaleDateString();
+      } catch(e) { date = 'Recent'; }
       return `
         <div class="admin-post-row">
-          <div class="admin-post-info"><h4>${p.title}</h4><p>${date} · ${p.published ? '<span style="color:var(--success)">Published</span>' : '<span style="color:var(--warning)">Draft</span>'}</p></div>
+          <div class="admin-post-info"><h4>${p.title || 'Untitled'}</h4><p>${date} · ${p.published ? '<span style="color:var(--success)">Published</span>' : '<span style="color:var(--warning)">Draft</span>'}</p></div>
           <div class="admin-post-btns">
             <button onclick="editPost('${doc.id}')" class="btn btn-sm btn-secondary">✏️</button>
             <button onclick="deletePost('${doc.id}')" class="btn btn-sm btn-danger">🗑️</button>
           </div>
         </div>`;
     }).join('');
-  } catch (err) { c.innerHTML = '<p>Error loading posts.</p>'; }
+    console.log('Admin: Loaded ' + snap.docs.length + ' posts.');
+  } catch (err) {
+    console.error('Admin load error:', err);
+    c.innerHTML = '<p style="text-align:center;color:var(--danger);padding:2rem;">Error loading posts: ' + (err.message || 'Unknown error') + '</p>';
+  }
 }
 
 async function handleCreatePost(e) {
