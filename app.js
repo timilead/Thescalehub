@@ -307,7 +307,7 @@ function renderNavbar(activePage) {
           <a href="blog.html" class="${activePage === 'blog' ? 'active' : ''}">Blog</a>
           <a href="video-course.html" class="${activePage === 'video' ? 'active' : ''}" style="display:inline-flex;align-items:center;gap:0.35rem;">🎬 Video Course <span class="nav-soon-badge">SOON</span></a>
           <a href="about.html" class="${activePage === 'about' ? 'active' : ''}">About</a>
-          <a href="ct.html" class="${activePage === 'contact' ? 'active' : ''}">Contact</a>
+          <a href="contact.html" class="${activePage === 'contact' ? 'active' : ''}">Contact</a>
           ${adm ? `<a href="admin.html" class="${activePage === 'admin' ? 'active' : ''}">⚙️ Admin</a>` : ''}
           ${isCourseComplete() ? `<a href="complete.html" class="${activePage === 'complete' ? 'active' : ''}">🏆 Certificate</a>` : ''}
           ${loggedIn
