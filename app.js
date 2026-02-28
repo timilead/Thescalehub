@@ -699,16 +699,17 @@ async function renderBlogPosts(containerId, limit) {
         }
       } catch (e) { dateStr = 'Recent'; }
       const excerpt = p.excerpt || (p.content ? p.content.substring(0, 150) + '...' : '');
+      const postUrl = 'blog-post.html?id=' + doc.id;
       return `
-        <div class="blog-card">
+        <a href="${postUrl}" class="blog-card" style="text-decoration:none;color:inherit;cursor:pointer;">
           ${p.imageUrl ? `<div class="blog-card-img" style="background-image:url('${p.imageUrl}')"></div>` : `<div class="blog-card-img blog-card-img-placeholder"><span>📝</span></div>`}
           <div class="blog-card-body">
             <div class="blog-card-date">${dateStr}</div>
             <h3>${p.title || 'Untitled Post'}</h3>
             <p>${excerpt}</p>
-            ${p.link ? `<a href="${p.link}" target="_blank" rel="noopener" class="blog-read-more">Read More →</a>` : ''}
+            <span class="blog-read-more">Read Full Post →</span>
           </div>
-        </div>`;
+        </a>`;
     }).join('');
     console.log('Blog: Loaded ' + snap.docs.length + ' posts successfully.');
   } catch (err) {
@@ -717,6 +718,228 @@ async function renderBlogPosts(containerId, limit) {
   }
 }
 
+// ==========================================
+// SECTION 10B: SINGLE BLOG POST VIEW
+// ==========================================
+async function renderFullBlogPost() {
+  const container = document.getElementById('blogPostContainer');
+  if (!container) return;
+  // Get post ID from URL
+  const postId = new URLSearchParams(window.location.search).get('id');
+  if (!postId) {
+    container.innerHTML = `
+      <div class="blog-post-error">
+        <div style="font-size:3rem;margin-bottom:1rem;">🔍</div>
+        <h2>Post Not Found</h2>
+        <p>No post ID was provided.</p>
+        <a href="blog.html" class="btn btn-primary mt-3">← Back to Blog</a>
+      </div>`;
+    return;
+  }
+  if (!firebaseReady || !db) {
+    container.innerHTML = `
+      <div class="blog-post-error">
+        <div style="font-size:3rem;margin-bottom:1rem;">⚙️</div>
+        <h2>Firebase Not Configured</h2>
+        <p>Blog posts require Firebase to be set up.</p>
+        <a href="blog.html" class="btn btn-primary mt-3">← Back to Blog</a>
+      </div>`;
+    return;
+  }
+  // Show loading
+  container.innerHTML = `
+    <div class="blog-post-loading">
+      <div class="spinner-sm"></div>
+      <p style="margin-top:1rem;color:var(--gray-500);">Loading post...</p>
+    </div>`;
+  try {
+    const doc = await db.collection('posts').doc(postId).get();
+    if (!doc.exists) {
+      container.innerHTML = `
+        <div class="blog-post-error">
+          <div style="font-size:3rem;margin-bottom:1rem;">😕</div>
+          <h2>Post Not Found</h2>
+          <p>This post may have been removed or the link is incorrect.</p>
+          <a href="blog.html" class="btn btn-primary mt-3">← Back to Blog</a>
+        </div>`;
+      return;
+    }
+    const post = doc.data();
+    // Format date
+    let dateStr = '';
+    let fullDateStr = '';
+    try {
+      if (post.createdAt && post.createdAt.toDate) {
+        const d = post.createdAt.toDate();
+        dateStr = d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        fullDateStr = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      } else if (post.updatedAt && post.updatedAt.toDate) {
+        const d = post.updatedAt.toDate();
+        dateStr = d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        fullDateStr = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+    } catch (e) { dateStr = 'Recent'; fullDateStr = 'Recently published'; }
+    // Format content — convert plain text line breaks to HTML paragraphs
+    let formattedContent = formatBlogContent(post.content || '');
+    // Set page title
+    document.title = (post.title || 'Blog Post') + ' | TheScaleHub';
+    // Build the page
+    container.innerHTML = `
+      <!-- Hero Header -->
+      <section class="blog-post-hero">
+        <div style="max-width:800px;margin:0 auto;">
+          <div class="breadcrumb">
+            <a href="index.html">Home</a> &nbsp;/&nbsp; <a href="blog.html">Blog</a> &nbsp;/&nbsp; ${post.title || 'Post'}
+          </div>
+          <h1>${post.title || 'Untitled Post'}</h1>
+          <div class="blog-post-meta">
+            ${dateStr ? `<span>📅 ${fullDateStr}</span>` : ''}
+            ${post.authorName ? `<span>✍️ ${post.authorName}</span>` : ''}
+            ${post.content ? `<span>📖 ${Math.ceil(post.content.split(/\s+/).length / 200)} min read</span>` : ''}
+          </div>
+        </div>
+      </section>
+      <!-- Cover Image -->
+      ${post.imageUrl ? `
+        <div class="blog-post-cover">
+          <img src="${post.imageUrl}" alt="${post.title || 'Blog post image'}" onerror="this.parentElement.style.display='none'">
+        </div>` : ''}
+      <!-- Post Body -->
+      <div class="blog-post-body">
+        <div class="blog-post-content">
+          ${formattedContent}
+        </div>
+        <!-- External Link -->
+        ${post.link ? `
+          <div class="blog-post-external">
+            <p>📎 This post references an external resource:</p>
+            <a href="${post.link}" target="_blank" rel="noopener" class="btn btn-primary">Visit External Link →</a>
+          </div>` : ''}
+        <!-- Actions -->
+        <div class="blog-post-actions">
+          <a href="blog.html" class="btn btn-secondary">← Back to Blog</a>
+          <div class="blog-post-share">
+            <span>Share:</span>
+            <button class="share-btn" onclick="shareBlogPost('twitter')" title="Share on Twitter">𝕏</button>
+            <button class="share-btn" onclick="shareBlogPost('whatsapp')" title="Share on WhatsApp">💬</button>
+            <button class="share-btn" onclick="shareBlogPost('copy')" title="Copy link" id="copyLinkBtn">🔗</button>
+          </div>
+        </div>
+      </div>
+      <!-- Related CTA -->
+      <section class="section section-alt" style="text-align:center;">
+        <div style="max-width:600px;margin:0 auto;padding:0 1.5rem;">
+          <h2>Want to Learn More?</h2>
+          <p style="color:var(--gray-500);margin-bottom:2rem;">Take our free 10-module course on fixing low sales and growing your business.</p>
+          <a href="dashboard.html" class="btn btn-primary btn-lg">🚀 Start Free Course</a>
+        </div>
+      </section>
+    `;
+    console.log('Blog post loaded:', post.title);
+  } catch (err) {
+    console.error('Error loading blog post:', err);
+    container.innerHTML = `
+      <div class="blog-post-error">
+        <div style="font-size:3rem;margin-bottom:1rem;">⚠️</div>
+        <h2>Error Loading Post</h2>
+        <p>${err.message || 'An unexpected error occurred.'}</p>
+        <a href="blog.html" class="btn btn-primary mt-3">← Back to Blog</a>
+      </div>`;
+  }
+}
+/**
+ * Format plain text blog content into proper HTML.
+ * Handles: line breaks → paragraphs, **bold**, *italic*, URLs, markdown-like headers
+ */
+function formatBlogContent(text) {
+  if (!text) return '<p>No content available.</p>';
+  // If the content already contains HTML tags, return as-is
+  if (/<[a-z][\s\S]*>/i.test(text) && (text.includes('<p>') || text.includes('<h') || text.includes('<div') || text.includes('<br'))) {
+    return text;
+  }
+  // Split into paragraphs by double newlines
+  let paragraphs = text.split(/\n\s*\n/);
+  let html = paragraphs.map(para => {
+    para = para.trim();
+    if (!para) return '';
+    // Check for markdown-style headers
+    if (para.startsWith('### ')) {
+      return '<h3>' + escapeAndFormat(para.substring(4)) + '</h3>';
+    }
+    if (para.startsWith('## ')) {
+      return '<h2>' + escapeAndFormat(para.substring(3)) + '</h2>';
+    }
+    if (para.startsWith('# ')) {
+      return '<h2>' + escapeAndFormat(para.substring(2)) + '</h2>';
+    }
+    // Check for bullet points (lines starting with - or *)
+    const lines = para.split('\n');
+    const isList = lines.every(l => /^\s*[-*•]\s/.test(l.trim()) || l.trim() === '');
+    if (isList && lines.filter(l => l.trim()).length > 0) {
+      const items = lines
+        .filter(l => l.trim())
+        .map(l => '<li>' + escapeAndFormat(l.replace(/^\s*[-*•]\s*/, '')) + '</li>')
+        .join('');
+      return '<ul>' + items + '</ul>';
+    }
+    // Check for numbered lists
+    const isNumberedList = lines.every(l => /^\s*\d+[.)]\s/.test(l.trim()) || l.trim() === '');
+    if (isNumberedList && lines.filter(l => l.trim()).length > 0) {
+      const items = lines
+        .filter(l => l.trim())
+        .map(l => '<li>' + escapeAndFormat(l.replace(/^\s*\d+[.)]\s*/, '')) + '</li>')
+        .join('');
+      return '<ol>' + items + '</ol>';
+    }
+    // Regular paragraph — handle single newlines as <br>
+    const formattedPara = para.split('\n').map(line => escapeAndFormat(line.trim())).join('<br>');
+    return '<p>' + formattedPara + '</p>';
+  }).filter(Boolean).join('\n');
+  return html || '<p>' + text + '</p>';
+}
+/**
+ * Apply inline formatting: **bold**, *italic*, and auto-link URLs
+ */
+function escapeAndFormat(text) {
+  // Convert **bold**
+  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // Convert *italic*
+  text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  // Auto-link URLs
+  text = text.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+  return text;
+}
+/**
+ * Share blog post on different platforms
+ */
+function shareBlogPost(platform) {
+  const url = window.location.href;
+  const title = document.title;
+  switch (platform) {
+    case 'twitter':
+      window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(title) + '&url=' + encodeURIComponent(url), '_blank');
+      break;
+    case 'whatsapp':
+      window.open('https://wa.me/?text=' + encodeURIComponent(title + ' ' + url), '_blank');
+      break;
+    case 'copy':
+      navigator.clipboard.writeText(url).then(() => {
+        const btn = document.getElementById('copyLinkBtn');
+        if (btn) { btn.textContent = '✅'; setTimeout(() => btn.textContent = '🔗', 2000); }
+      }).catch(() => {
+        // Fallback
+        const input = document.createElement('input');
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        const btn = document.getElementById('copyLinkBtn');
+        if (btn) { btn.textContent = '✅'; setTimeout(() => btn.textContent = '🔗', 2000); }
+      });
+      break;
+  }
+}
 
 // =====================================
 
