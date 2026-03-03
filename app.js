@@ -1098,7 +1098,20 @@ function renderFooter() {
         <a href="privacy.html">Privacy Policy</a>
         <a href="dashboard.html">Dashboard</a>
       </div>
+        <div class="footer-brand-row">
+        <span style="font-weight:800;color:rgba(255,255,255,0.9);font-size:1.1rem;">Our Services</span>
+      </div>
+      <div>
+        <p> Hire web <a href="https://wa.me/2348122801827?text=Hello am chatting you from your website TheScaleHub i want web developer my name is....."><strong>Developer</strong></a></p>
+          <p> Hire <a href="https://wa.me/2348122801827?text=Hello am chatting you from your website TheScaleHub i want social media manager my name is....."><strong>Social media manager</strong></a></p>
+          <p> Hire <a href="https://wa.me/2348122801827?text=Hello am chatting you from your website TheScaleHub i want graphic designer my name is....."><strong>Graphic designer</strong></a></p>
+            <p> Hire <a href="https://wa.me/2348122801827?text=Hello am chatting you from your website TheScaleHub i want ads expert my name is....."><strong>Ads Expert</strong></a></p>
+              <p> Hire <a href="https://wa.me/2348122801827?text=Hello am chatting you from your website TheScaleHub i want sales expert my name is....."><strong>Sales Expert</strong></a></p>
+              
+      </div>
       <div class="footer-powered">Powered by <strong>TheScaleHub</strong></div>
+      
       <p>&copy; ${new Date().getFullYear()} TheScaleHub. All rights reserved.</p>
     </div>`;
 }
+
